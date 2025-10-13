@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отзывы — Windows Shinshilla Edition</title>
+    <link rel="stylesheet" href="@{/css/style.css}">
+</head>
+<body>
+    <div id="container">
+        <!-- Шапка -->
+        <div id="header">
+            <div id="logo">
+                <a href="/"><img src="@{/img/logo.png}" alt="Microsoft Logo"></a>
+                <h1>Windows Shinshilla Edition</h1>
+            </div>
+        </div>
+
+        <!-- Навигация -->
+        <div id="nav">
+            <ul>
+                <li><a href="/">Главная</a></li>
+                <li><a href="/photos">Фотографии</a></li>
+                <li><a href="/instrs">Инструкции</a></li>
+                <li><a href="https://t.me/windowsshinshillaeditionofficial">Телеграм</a></li>
+                <li><a href="/wallpapers">Обои</a></li>
+                <li><a href="/download">Загрузки</a></li>
+                <li><a href="/otzivy">Отзывы</a></li>
+            </ul>
+        </div>
+
+        <!-- Контент -->
+        <div id="content">
+            <div class="hero">
+                <h2>Отзывы пользователей</h2>
+                <p>Поделитесь своими впечатлениями о Windows Shinshilla Edition! Ваша обратная связь помогает нам улучшаться ❤️</p>
+            </div>
+
+            <!-- Форма отзыва -->
+            <div class="req-box" style="max-width:600px; margin:auto;">
+                <h3>Оставить отзыв</h3>
+                <form method="POST" action="/otzivy" class="review-form">
+                    <label for="name">Ваше имя:</label><br>
+                    <input type="text" id="name" name="name" placeholder="Введите имя (или оставьте пустым)" style="width:100%;padding:8px;margin-bottom:10px;border-radius:6px;border:1px solid #ccc;">
+
+                    <label for="rating">Оценка:</label><br>
+                    <select id="rating" name="rating" style="width:100%;padding:8px;margin-bottom:10px;border-radius:6px;border:1px solid #ccc;">
+                        <option value="5">⭐⭐⭐⭐⭐ (Отлично)</option>
+                        <option value="4">⭐⭐⭐⭐ (Хорошо)</option>
+                        <option value="3">⭐⭐⭐ (Нормально)</option>
+                        <option value="2">⭐⭐ (Плохо)</option>
+                        <option value="1">⭐ (Ужасно)</option>
+                    </select>
+
+                    <label for="comment">Комментарий:</label><br>
+                    <textarea id="comment" name="comment" rows="4" placeholder="Ваш комментарий..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;resize:vertical;"></textarea>
+
+                    <button type="submit" style="margin-top:15px;padding:10px 20px;border:none;border-radius:6px;background-color:var(--aero-accent);color:white;cursor:pointer;">Отправить отзыв</button>
+                </form>
+            </div>
+
+            <!-- Список отзывов -->
+            <div class="tiles-container" style="margin-top:50px;">
+                {% if reviews %}
+                    <th:block th:each="review : ${reviews}">
+                        <div class="tile" style="min-height:200px;">
+                            <div class="tile-bg" style="background-color: rgba(255,255,255,0.4);"></div>
+                            <h3>${review.name}</h3>
+                            <div class="icon">
+                                {% for i in range(review.rating) %}
+                                    ⭐
+                                </th:block>
+                            </div>
+                            <p style="margin:10px 0;z-index:2;">${review.comment}</p>
+                            <small style="color:#333;z-index:2;">${review.date}</small>
+                        </div>
+                    </th:block>
+                {% else %}
+                    <p style="text-align:center;opacity:0.8;">Пока никто не оставил отзыв 😢 Будьте первым!</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Подвал -->
+        <div id="footer">
+            <p>Команда Windows Shinshilla с любовью :), 2025</p>
+
+            <p>Специально для Бони и Нюши, и всех любителей шиншиллок!</p>
+            <p>Windows Shinshilla Edition не является продуктом корпорации Microsoft.</p>
+        </div>
+    </div>
+</body>
+</html>
