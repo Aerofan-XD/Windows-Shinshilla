@@ -40,7 +40,18 @@ def history():
 
 @app.route('/photos')
 def photos():
-    return render_template('photos.html')
+    screens_folder = os.path.join(app.static_folder, 'screens')
+    tiles = []
+
+    for i in range(1, 9):
+        filename = f"sc_{i}.png"
+        file_path = os.path.join(screens_folder, filename)
+        if os.path.exists(file_path):
+            tiles.append({'type': 'image', 'src': filename, 'title': f'Screenshot {i}'})
+        else:
+            tiles.append({'type': 'placeholder', 'text': 'временно недоступно :('})
+
+    return render_template('photos.html', tiles=tiles)
 
 
 @app.route('/instrs')
