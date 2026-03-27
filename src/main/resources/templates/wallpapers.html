@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обои — Windows Shinshilla Edition</title>
+    <link rel="stylesheet" href="@{/css/style.css}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        /* Легкие доработки под галерею */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        .wall-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .wall-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .wall-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+        }
+        .wall-info {
+            padding: 15px;
+            text-align: center;
+        }
+        .wall-title {
+            font-weight: 600;
+            color: var(--aero-dark);
+            margin-bottom: 5px;
+        }
+        .wall-size {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .wall-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .wall-buttons button,
+        .wall-buttons a {
+            background: var(--aero-accent);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .wall-buttons button:hover,
+        .wall-buttons a:hover {
+            background: #3a7de8;
+            transform: translateY(-2px);
+        }
+
+        /* Модальное окно предпросмотра */
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        .modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-content {
+            background: rgba(255,255,255,0.95);
+            border-radius: 10px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            background: linear-gradient(to right, var(--aero-dark), #2a4a7e);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 { font-weight: 400; }
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .modal-body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            background: white;
+        }
+        .modal-body img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 6px;
+        }
+        .modal-footer {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(240,240,240,0.9);
+        }
+        .download-btn {
+            background: var(--aero-accent);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .download-btn:hover {
+            background: #3a7de8;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <!-- Шапка -->
+        <div id="header">
+            <div id="logo">
+                <a href="/"><img src="@{/img/logo.png}" alt="Microsoft Logo"></a>
+                <h1>Windows Shinshilla Edition</h1>
+            </div>
+        </div>
+
+        <!-- Меню -->
+        <div id="nav">
+            <ul>
+                <li><a href="/">Главная</a></li>
+                <li><a href="/photos">Фотографии</a></li>
+                <li><a href="/instrs">Инструкции</a></li>
+                <li><a href="https://t.me/windowsshinshillaeditionofficial">Телеграм</a></li>
+                <li><a href="/wallpapers" class="active">Обои</a></li>
+                <li><a href="/download">Загрузки</a></li>
+                <li><a href="/otzivy">Отзывы</a></li>
+            </ul>
+        </div>
+
+        <!-- Контент -->
+        <div id="content">
+            <div class="hero">
+                <h2>Коллекция обоев Shinshilla Edition</h2>
+                <p>Скачайте эксклюзивные обои для вашего рабочего стола!</p>
+            </div>
+
+            <div class="gallery" id="gallery"></div>
+        </div>
+
+        <!-- Подвал -->
+        <div id="footer">
+            <p>Команда Windows Shinshilla с любовью ❤️, 2025</p>
+            <p>Windows Shinshilla Edition не является продуктом корпорации Microsoft.</p>
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div class="modal" id="wallModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Просмотр</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <img id="modalImage" src="" alt="Обои">
+            </div>
+            <div class="modal-footer">
+                <span id="modalSize">1920x1080</span>
+                <a id="modalDownload" class="download-btn" download><i class="fa fa-download"></i> Скачать</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const wallpapers = [
+            { title: "Windows классический", size: "1920x1080", src: "static/walls/img0.jpg" },
+            { title: "Бонька", size: "1920x1080", src: "static/walls/img1.jpg" },
+            { title: "Остров Каталина", size: "1920x1080", src: "static/walls/img2.jpg" },
+            { title: "Futuristic", size: "3000x2000", src: "static/walls/img3.jpg" },
+            { title: "Windows 11", size: "1920x1080", src: "static/walls/img4.jpg" },
+            { title: "Холмы", size: "2560x1440", src: "static/walls/img5.jpg" },
+            { title: "Believe in shinshilla", size: "3840x2160", src: "static/walls/img6.jpg" },
+            { title: "Окак", size: "1920x1080", src: "static/walls/img7.png" }
+        ];
+
+        const gallery = document.getElementById('gallery');
+        const modal = document.getElementById('wallModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalSize = document.getElementById('modalSize');
+        const modalDownload = document.getElementById('modalDownload');
+
+        function openModal(wall) {
+            modal.classList.add('active');
+            modalImg.src = wall.src;
+            modalTitle.textContent = wall.title;
+            modalSize.textContent = wall.size;
+            modalDownload.href = wall.src;
+            modalDownload.download = `${wall.title}.jpg`;
+        }
+
+        document.querySelector('.close-modal').onclick = () => {
+            modal.classList.remove('active');
+        };
+
+        window.onclick = (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        };
+
+        wallpapers.forEach(wall => {
+            const div = document.createElement('div');
+            div.className = 'wall-item';
+            div.innerHTML = `
+                <img src="${wall.src}" alt="${wall.title}">
+                <div class="wall-info">
+                    <div class="wall-title">${wall.title}</div>
+                    <div class="wall-size">${wall.size}</div>
+                    <div class="wall-buttons">
+                        <button onclick='openModal(${JSON.stringify(wall)})'><i class="fa fa-eye"></i> Просмотр</button>
+                        <a href="${wall.src}" download="${wall.title}.jpg"><i class="fa fa-download"></i> Скачать</a>
+                    </div>
+                </div>
+            `;
+            gallery.appendChild(div);
+        });
+    </script>
+</body>
+</html>
